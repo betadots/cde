@@ -1,0 +1,22 @@
+types = {
+  "puppet" = {
+    "cores" = 2,
+    "memory" = 4096,
+  },
+  "workstation" = {
+    "cores" = 1,
+    "memory" = "1024"
+  }
+}
+
+vms = {
+  "d12a" = {
+    template = "debian12"
+    type     = "workstation"
+    node     = "pve02"
+    sshfs    = {
+      user    = "<user to connect to local terraform host>"
+      private = "~/.ssh/id_ed25519.terraform"
+    }   
+  }
+}

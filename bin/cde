@@ -1,0 +1,55 @@
+#!/bin/zsh
+
+#HOSTADDR=$(terraform output ipv4addrs |grep $1 |cut -d '"' -f4||xargs)
+
+#ssh $HOSTADDR
+
+
+usage() { 
+  echo "${0##*/} [options...] args ... "
+}
+version() { 
+  echo "0.1"
+}
+
+parse_opt() {
+  while [[ -n "$1" ]]; do
+    case "$1" in
+    --) break ;; 
+    
+    ## Your options here:
+    -m) opts[m]=1 ;;
+    -c|--center) opts[c]="$2" ; shift ;;
+    -x) opts[x]=1 ;;
+
+    ## Common / typical options
+    -V) version; exit 0 ;;
+    --version) 
+        version; exit 0 ;;
+    -?|--help)
+        usage ; exit 0 ;;
+    -*)
+        echo >&2 "$0: Error in usage."
+        usage
+        exit 1
+        ;;
+    *)  break ;;
+    esac
+    shift
+  done
+  args=("$@")
+}
+
+declare args
+declare -A opts
+parse_opt "$@"
+
+case "${args[1]}" in
+  sub1)  
+    "${args[@]}" ;;
+  *) 
+    echo >&2 "Unknown sub-command"
+    exit 1
+esac
+
+

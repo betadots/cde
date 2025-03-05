@@ -1,0 +1,14 @@
+.git/
+.*.sw[op]
+# Terraform
+**/*.auto.tfvars
+**/*.auto.tfvars.json
+**/.terraform.lock.hcl
+**/terraform.tfvars
+**/terraform.tfvars.json
+# Local .terraform directories
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+.terraformrc
+terraform.rc
