@@ -2,6 +2,8 @@
 
 Terraform based deployment and provisioning of virtual machines with sshfs to a local workstation. At the moment only Proxmox is supported.
 
+Also in the beginning only Debian works. Ubuntu should works. SSHFS works only on MACOS at the moment and only the interface en0.
+
 Required variables are:
 
 * **proxmox** here the data for authentication
