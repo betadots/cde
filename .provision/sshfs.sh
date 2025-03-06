@@ -34,23 +34,31 @@ case $ID in
     if ! $(dpkg-query --show sshfs >/dev/null 2>&1); then
       apt-get install -y sshfs >/dev/null 2>&1 || exit 1
     fi
-
-    if ! $(grep "^sshfs#${USER}@${HOST}:${SRC}\s*${DST}\s*fuse" /etc/fstab >/dev/null 2>&1); then
-      if $(awk '{ print $2 }' /etc/fstab |grep $DST >/dev/null 2>&1); then
-        echo "${DST} is already mounted"
-        exit 1
-      fi
-      echo "sshfs#${USER}@${HOST}:${SRC} ${DST} fuse IdentityFile=/root/.ssh/identity,StrictHostKeyChecking=no,defaults,_netdev,allow_other 0 0" >> /etc/fstab && systemctl daemon-reload
-    fi
-
-    if ! [ -d $DST ]; then
-      mkdir -p $DST || exit 1
-    fi
-
-    if ! $(mount |grep "on ${DST} type fuse" >/dev/null 2>&1); then
-      mount $DST || exit 1
+    ;;
+  rocky | almalinux | redhat | fedora | centos)
+    if ! $(rpm -iq fuse-sshfs >/dev/null 2>&1); then
+      dnf install -y fuse-sshfs || exit 1
     fi
     ;;
 esac
+
+if ! $(grep ".*\s*${DST}" /etc/fstab >/dev/null 2>&1); then
+  echo "${USER}@${HOST}:${SRC} ${DST} fuse.sshfs IdentityFile=/root/.ssh/identity,StrictHostKeyChecking=no,_netdev,allow_other 0 0" >> /etc/fstab && systemctl daemon-reload
+else
+  echo "/etc/fstab: ${DST} is already occupied by a mount"
+  exit 1
+fi
+
+if ! [ -d $DST ]; then
+  mkdir -p $DST || exit 1
+fi
+
+if ! $(mount |grep "on ${DST}" >/dev/null 2>&1); then
+  #nohup mount $DST </dev/null >/dev/null 2>&1
+  nohup mount $DST >/dev/null 2>&1
+else
+  echo "mount: ${DST} is already occupied by a mount"
+  exit 1
+fi
 
 exit 0
