@@ -23,7 +23,7 @@ See also the files with the suffix `.example`.
 
 The file specified in `sshfs.private` of a virtual machine in `vms` will be copied to your new VM and will be used to authenticate against your local workstation. So the belonging public key has to be saved to your *authorized_keys* file of the user speficied. 
 
-Requirements of the used Proxmox templates:
+Requirements for the used Proxmox templates:
 * cloud-init, no package updates
 * qemu-guest-agent installed and running
 * sshfs package installed
