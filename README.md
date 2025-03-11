@@ -2,7 +2,7 @@
 
 Terraform based deployment and provisioning of virtual machines with sshfs to a local workstation. At the moment only Proxmox is supported.
 
-Also in the beginning only Debian works. Ubuntu should works. SSHFS works only on MACOS at the moment and only the interface en0.
+Also in the beginning only Debian works. Ubuntu should works.
 
 Required variables are:
 
@@ -22,6 +22,10 @@ Required variables are:
 See also the files with the suffix `.example`.
 
 The file specified in `sshfs.private` of a virtual machine in `vms` will be copied to your new VM and will be used to authenticate against your local workstation. So the belonging public key has to be saved to your *authorized_keys* file of the user speficied. 
+
+Requirements for the local machine:
+* facter in search path
+* SSH access via pubkey without passphrass
 
 Requirements for the used Proxmox templates:
 * cloud-init, no package updates

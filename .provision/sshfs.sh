@@ -54,7 +54,6 @@ if ! [ -d $DST ]; then
 fi
 
 if ! $(mount |grep "on ${DST}" >/dev/null 2>&1); then
-  #nohup mount $DST </dev/null >/dev/null 2>&1
   nohup mount $DST >/dev/null 2>&1
 else
   echo "mount: ${DST} is already occupied by a mount"

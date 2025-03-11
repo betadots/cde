@@ -64,8 +64,10 @@ resource "proxmox_virtual_environment_vm" "this" {
       "sudo install -o root -g root -m700 -d  /root/.ssh",
       "sudo install -o root -g root -m600 /tmp/identity /root/.ssh/identity && rm /tmp/identity",
       "sudo chmod +x /tmp/terraform.sshfs",
-      "sudo /tmp/terraform.sshfs -u ${var.sshfs.user} -h ${data.external.ip.result.v4} -s ${path.cwd}/.provision -d /terraform",
-      "sudo /tmp/terraform.sshfs -u ${var.sshfs.user} -h ${data.external.ip.result.v4} -s puppetcode -d /root/puppetcode",
+      #"sudo /tmp/terraform.sshfs -u ${var.sshfs.user} -h ${data.external.ip.result.v4} -s ${path.cwd}/.provision -d /terraform",
+      "sudo /tmp/terraform.sshfs -u ${var.sshfs.user} -h ${local.myip} -s ${path.cwd}/.provision -d /terraform",
+      #"sudo /tmp/terraform.sshfs -u ${var.sshfs.user} -h ${data.external.ip.result.v4} -s puppetcode -d /root/puppetcode",
+      "sudo /tmp/terraform.sshfs -u ${var.sshfs.user} -h ${local.myip} -s puppetcode -d /root/puppetcode",
       "sudo /terraform/shell/openvox-agent.sh -v 8"
     ]
   }

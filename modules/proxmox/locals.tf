@@ -6,4 +6,6 @@ locals {
       node = vm.node_name
     }
   }
+
+  myip = data.external.local.result["networking.ip"]
 }

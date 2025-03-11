@@ -14,3 +14,7 @@ output "ipv4" {
     k => flatten(v.ipv4_addresses)[1]
   }
 }
+
+output "local_ip" {
+  value = local.myip
+}

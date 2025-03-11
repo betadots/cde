@@ -11,3 +11,7 @@ data "proxmox_virtual_environment_vms" "templates" {
 data "external" "ip" {
   program = ["bash", "${path.module}/get_ipaddr.sh"]
 }
+
+data "external" "local" {
+  program = ["facter", "networking.ip", "--json"]
+}
