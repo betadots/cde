@@ -48,12 +48,6 @@ case $ID in
       echo "ok"
     fi
 
-    if $(systemctl status puppet |grep 'puppet.service; enabled;' >/dev/null 2>&1); then
-      echo -n "Disable OpenVox agent..."
-      systemctl disable --now puppet.service >/dev/null 2>&1 || raise_error
-      echo "ok"
-    fi
-
     if ! [ -L /etc/puppetlabs/code/environments/production ]; then
       echo -n "Removing production environment..."
       rm -rf /etc/puppetlabs/code/environments/production >/dev/null 2>&1 || raise_error
@@ -61,6 +55,27 @@ case $ID in
       echo "ok"
     fi
     ;;
+
+  rocky | almalinux | redhat | centos)
+    RELEASE=$(echo "${VERSION_ID}" |cut -d '.' -f 1)
+    if ! $(rpm -aq |grep "openvox${OPENVOX_VERSION}-release" >/dev/null 2>&1); then
+      echo -n "Adding OpenVox repository..."
+      dnf install -y https://yum.voxpupuli.org/openvox8-release-el-$RELEASE.noarch.rpm >/dev/null 2>&1 || raise_error
+      echo "ok"
+    fi
+
+    if ! $(rpm -q openvox-agent >/dev/null 2>&1); then
+      echo -n "Installing OpenVox agent..."
+      dnf install -y openvox-agent >/dev/null 2>&1 || raise_error
+      echo "ok"
+    fi
+    ;;    
 esac
+
+if $(systemctl status puppet |grep 'puppet.service; enabled;' >/dev/null 2>&1); then
+  echo -n "Disable OpenVox agent..."
+  systemctl disable --now puppet.service >/dev/null 2>&1 || raise_error
+  echo "ok"
+fi
 
 exit 0
