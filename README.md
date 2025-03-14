@@ -41,7 +41,7 @@ How to start?
 * change into root project directory
 * `./bin/cde init` 
   * initilize project (installs bolt modules and do a terraform init)
-* `./bin/cde <up|destroy> [virtual machine]
+* `./bin/cde <up|destroy> [virtual machine]`
   * apply or destroy all or a specific defined machine(s)
-* `./bin/cde ssh <virtual machine>
+* `./bin/cde ssh <virtual machine>`
   * logon specific machine  
