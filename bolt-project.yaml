@@ -1,0 +1,4 @@
+---
+name: cde
+modules:
+- name: puppetlabs-terraform

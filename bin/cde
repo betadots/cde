@@ -1,55 +1,95 @@
-#!/bin/zsh
-
-#HOSTADDR=$(terraform output ipv4addrs |grep $1 |cut -d '"' -f4||xargs)
-
-#ssh $HOSTADDR
-
+#!/usr/bin/env bash
 
 usage() { 
-  echo "${0##*/} [options...] args ... "
+    echo "$0 <up|destroy|ssh> [host target] [-h] [-v] [-p <proxmox|hetzner>]"
 }
+
 version() { 
-  echo "0.1"
+    echo "0.1.0"
 }
 
-parse_opt() {
-  while [[ -n "$1" ]]; do
-    case "$1" in
-    --) break ;; 
-    
-    ## Your options here:
-    -m) opts[m]=1 ;;
-    -c|--center) opts[c]="$2" ; shift ;;
-    -x) opts[x]=1 ;;
+# default provider
+provider="proxmox"
 
-    ## Common / typical options
-    -V) version; exit 0 ;;
-    --version) 
-        version; exit 0 ;;
-    -?|--help)
-        usage ; exit 0 ;;
-    -*)
-        echo >&2 "$0: Error in usage."
-        usage
-        exit 1
-        ;;
-    *)  break ;;
-    esac
-    shift
-  done
-  args=("$@")
-}
+# subcommands
+args=()
 
-declare args
-declare -A opts
-parse_opt "$@"
+# check if required binaries exist
+err=0; for cmd in bolt facter terraform jq; do
+    if ! which $cmd >/dev/null 2>&1; then
+        echo "${cmd}: binary isn't find."
+        err=$((err+1))
+    fi
 
-case "${args[1]}" in
-  sub1)  
-    "${args[@]}" ;;
-  *) 
-    echo >&2 "Unknown sub-command"
-    exit 1
+    if (($err > 0)); then
+      exit 1
+    fi
+done
+
+
+while [ $OPTIND -le "$#" ]
+do
+    if getopts hvp: option
+    then
+        case $option
+        in
+            p) provider="$OPTARG";;
+            v) version; exit 0;;
+            h) usage; exit 0;;
+        esac
+    else
+        args+=("${!OPTIND}")
+        ((OPTIND++))
+    fi
+done
+
+# implemented providers
+case $provider in
+    proxmox)
+      if [[ "x${args[1]}" != "x" ]]; then
+          vm="target='module.pve_vm[\"${args[1]}\"]'"
+      fi
+      ;;
+    hetzner)
+      echo "provider: ${provider} is not implemented."
+      exit 0
+      ;;
+    *)
+      echo "Unknown provider: ${provider}"
+      exit 1
 esac
 
 
+# subcommands
+case "${args[0]}" in
+    up)  
+        bolt plan run terraform::apply dir=./terraform $vm
+        ;;
+    destroy)
+        bolt plan run terraform::destroy dir=./terraform $vm
+        ;;
+    ssh)
+        if [[ "x${args[1]}" != "x" ]]; then
+            user=$(bolt inventory show --detail --format json |jq -r ".targets[] | select(.name==\"${args[1]}\").config.ssh.user")
+            ip=$(bolt inventory show --detail --format json |jq -r ".targets[] | select(.name==\"${args[1]}\").uri")
+            if [[ "x${ip}" != "x" && "x${user}" != "x" ]]; then
+                ssh $user@$ip
+            else
+                echo "Could not found target or user in inventory!"
+            exit 1
+            fi
+        else
+            echo "usage: $0 ssh <destination>"
+            exit 1
+        fi
+        ;;
+    init)
+        bolt module install
+        bolt task run terraform::initialize --target localhost dir=./terraform
+        ;;
+    *) 
+        usage
+        exit 1
+esac
+
+exit 0

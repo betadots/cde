@@ -9,12 +9,5 @@ output "templates" {
 }
 
 output "ipv4" {
-  value = {
-    for k, v in proxmox_virtual_environment_vm.this:
-    k => flatten(v.ipv4_addresses)[1]
-  }
-}
-
-output "local_ip" {
-  value = local.myip
+  value = flatten(proxmox_virtual_environment_vm.this.ipv4_addresses)[1]
 }

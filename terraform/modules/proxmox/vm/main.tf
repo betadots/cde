@@ -1,23 +1,21 @@
 resource "proxmox_virtual_environment_vm" "this" {
-  for_each    = var.vms
-
-  name        = each.key
+  name        = var.name
   description = "Managed by Terraform"
-  node_name   = each.value.node
+  node_name   = var.node
 
   clone {
-    node_name = local.templates[each.value.template].node
-    vm_id = local.templates[each.value.template].id
+    node_name = local.templates[var.template].node
+    vm_id = local.templates[var.template].id
     full = false
   }
 
   cpu {
-    cores = var.types[each.value.type].cores
+    cores = var.cores
     type  = "host"
   }
 
   memory {
-    dedicated = var.types[each.value.type].memory
+    dedicated = var.memory
   }
 
   vga {
@@ -26,7 +24,7 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   network_device {
-    bridge = "vmbr0"
+    bridge = var.bridge
     mtu = 1
   }
 
@@ -50,7 +48,7 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   provisioner "file" {
-    source      = var.sshfs.private
+    source      = var.sshfs.key_file
     destination = "/tmp/identity"
   }
 
@@ -64,11 +62,13 @@ resource "proxmox_virtual_environment_vm" "this" {
       "sudo install -o root -g root -m700 -d  /root/.ssh",
       "sudo install -o root -g root -m600 /tmp/identity /root/.ssh/identity && rm /tmp/identity",
       "sudo chmod +x /tmp/terraform.sshfs",
-      #"sudo /tmp/terraform.sshfs -u ${var.sshfs.user} -h ${data.external.ip.result.v4} -s ${path.cwd}/.provision -d /terraform",
       "sudo /tmp/terraform.sshfs -u ${var.sshfs.user} -h ${local.myip} -s ${path.cwd}/.provision -d /terraform",
-      #"sudo /tmp/terraform.sshfs -u ${var.sshfs.user} -h ${data.external.ip.result.v4} -s puppetcode -d /root/puppetcode",
       "sudo /tmp/terraform.sshfs -u ${var.sshfs.user} -h ${local.myip} -s puppetcode -d /root/puppetcode",
       "sudo /terraform/shell/openvox-agent.sh -v 8"
     ]
   }
+
+#  provisioner "local-exec" {
+#    command = "bolt apply -e \"file { '/tmp/bolt.txt': ensure => file, content => 'Test' }\" --targets ${each.key}"
+#  } 
 }    

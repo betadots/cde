@@ -1,0 +1,21 @@
+---
+groups:
+  - name: terraform
+    targets:
+      - _plugin: terraform
+        dir: ./terraform
+        resource_type: proxmox_virtual_environment_vm.this
+        target_mapping:
+           uri: ipv4_addresses.1.0
+           name: name
+
+config:
+  transport: ssh
+  ssh:
+    native-ssh: true
+    user: lbetz
+    host-key-check: false
+    run-as: root
+    run-as-command:
+      - sudo
+      - '-nksSEu'

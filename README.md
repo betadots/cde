@@ -1,10 +1,10 @@
 # Cloud Development Environment
 
-Terraform based deployment and provisioning of virtual machines with sshfs to a local workstation. At the moment only Proxmox is supported.
+Terraform and Bolt based deployment and provisioning of virtual machines with sshfs to a local workstation. At the moment only Proxmox is supported.
 
 Also in the beginning only Debian and RHEL works. Ubuntu should works.
 
-Required variables are:
+Required variables for Terraform (located in ./terraform) are:
 
 * **proxmox** here the data for authentication
   * *endpoint* URL to the API endpoint of your Proxmox environment
@@ -24,10 +24,24 @@ See also the files with the suffix `.example`.
 The file specified in `sshfs.private` of a virtual machine in `vms` will be copied to your new VM and will be used to authenticate against your local workstation. So the belonging public key has to be saved to your *authorized_keys* file of the user speficied. 
 
 Requirements for the local machine:
-* facter in search path
+* binaries in search path
+  * facter
+  * bolt
+  * terraform
+  * jq
 * SSH access via pubkey without passphrass
 
 Requirements for the used Proxmox templates:
 * cloud-init, no package updates
 * qemu-guest-agent installed and running
 * sshfs package installed
+
+How to start?
+
+* change into root project directory
+* `./bin/cde init` 
+  * initilize project (installs bolt modules and do a terraform init)
+* `./bin/cde <up|destroy> [virtual machine]
+  * apply or destroy all or a specific defined machine(s)
+* `./bin/cde ssh <virtual machine>
+  * logon specific machine  

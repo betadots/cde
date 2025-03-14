@@ -1,3 +1,7 @@
+variable "proxmox" {
+  type = map
+}
+
 variable "ssh" {
   type = map
 }
@@ -6,10 +10,10 @@ variable "sshfs" {
   type = map
 }
 
-variable "types" {
+variable "vms" {
   type = map
 }
 
-variable "vms" {
+variable "types" {
   type = map
 }
