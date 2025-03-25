@@ -5,7 +5,7 @@ usage() {
 }
 
 version() { 
-    echo "0.1.0"
+    echo "0.2.0"
 }
 
 # default provider
@@ -83,6 +83,14 @@ case "${args[0]}" in
             exit 1
         fi
         ;;
+    status)
+      terraform -chdir=./terraform refresh >/dev/null 2>&1
+      if [[ "x${args[1]}" != "x" ]]; then
+        terraform -chdir=./terraform output -json status |jq -r "{${args[1]}} | to_entries[] | \"\(.key)@\(.value)\"" | column -t -s'@'
+      else
+        terraform -chdir=./terraform output -json status |jq -r '. | to_entries[] | "\(.key)@\(.value)"' | column -t -s'@'
+       fi
+      ;;
     init)
         bolt module install
         bolt task run terraform::initialize --target localhost dir=./terraform

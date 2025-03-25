@@ -4,3 +4,8 @@ output "ipv4" {
     k => v.ipv4
   }
 }
+
+output "status" {
+  value = local.status
+}
+
