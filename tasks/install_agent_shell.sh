@@ -7,8 +7,8 @@ set -e
 #
 
 # Error if non-root
-if [ `id -u` -ne 0 ]; then
-  echo "cde::install_openvox task must be run as root"
+if [ $(id -u) -ne 0 ]; then
+  echo "puppet::install_agent task must be run as root"
   exit 1
 fi
 
@@ -23,7 +23,7 @@ now () {
 
 # Logging functions instead of echo
 log () {
-    echo "`now` ${1}"
+    echo "$(now) ${1}"
 }
 
 info () {
@@ -139,7 +139,7 @@ fi
 if exists hexdump; then
   random_number=$(random_hexdump)
 else
-  random_number="`date +%N`"
+  random_number="$(date +%N)"
 fi
 
 tmp_dir="$tmp/install.sh.$$.$random_number"
@@ -150,7 +150,7 @@ tmp_stderr="$tmp/stderr.$$.$random_number"
 capture_tmp_stderr() {
   # spool up tmp_stderr from all the commands we called
   if [ -f "$tmp_stderr" ]; then
-    output=`cat ${tmp_stderr}`
+    output=$(cat ${tmp_stderr})
     stderr_results="${stderr_results}\nSTDERR from $1:\n\n$output\n"
   fi
 }
@@ -363,6 +363,40 @@ do_download() {
 }
 
 #####
+# Helper: Check whether the apt config file has been modified, warning and exiting early if it has
+#
+
+assert_unmodified_apt_config() {
+  openvox_list=/etc/apt/sources.list.d/openvox-release.list
+  openvox7_list=/etc/apt/sources.list.d/openvox7-release.list
+  openvox8_list=/etc/apt/sources.list.d/openvox8-release.list
+
+  if [[ -f $openvox_list ]]; then
+    list_file=$openvox_list
+  elif [[ -f $openvox7_list ]]; then
+    list_file=$openvox7_list
+  elif [[ -f $openvox8_list ]]; then
+    list_file=$openvox8_list
+  fi
+
+  # If puppet.list exists, get its md5sum on disk and its md5sum from the release package
+  if [[ -n $list_file ]]; then
+    # For md5sum, the checksum is the first word
+    file_md5=($(md5sum "$list_file"))
+    pkg=($(basename $list_file | cut -d. -f1))
+
+    # For dpkg-query with this output format, the sum is the second word
+    package_md5=($(dpkg-query -W -f='${Conffiles}\n' "${pkg}" | grep -F "$list_file"))
+
+    # If the $package_md5 array is set, and the md5sum on disk doesn't match the md5sum from dpkg-query, it has been modified
+    if [[ $package_md5 && ${file_md5[0]} != ${package_md5[1]} ]]; then
+      warn "Configuration file $list_file has been modified from the default. Skipping agent installation."
+      exit 1
+    fi
+  fi
+}
+
+#####
 # Source options
 #
 
@@ -420,7 +454,7 @@ if [ -f "$PT__installdir/facts/tasks/bash.sh" ]; then
       ;;
     "Darwin")
       info "MacOS platform! Lets get you a DMG..."
-      os_version=`sw_vers | awk '/^ProductVersion:/ { print $2 }'`
+      os_version=$(sw_vers | awk '/^ProductVersion:/ { print $2 }')
       pkg_type=dmg
       platform=osx
       ;;
@@ -465,9 +499,9 @@ fi
 
 # Find which version of openvox or puppet is currently installed if any
 if [ -f /opt/puppetlabs/puppet/VERSION ]; then
-  installed_version=`cat /opt/puppetlabs/puppet/VERSION`
+  installed_version=$(cat /opt/puppetlabs/puppet/VERSION)
 elif type -p puppet >/dev/null; then
-  installed_version=`puppet --version`
+  installed_version=$(puppet --version)
 else
   installed_version=uninstalled
 fi
@@ -645,7 +679,7 @@ setup() {
         fi
       done
 
-      #assert_unmodified_apt_config
+      assert_unmodified_apt_config
 
       run_cmd "dpkg -i --force-confmiss ${2}"
       run_cmd "apt-get update -y >/dev/null 2>&1"
