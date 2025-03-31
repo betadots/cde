@@ -9,7 +9,7 @@ module "pve_vm" {
   cores    = var.types[each.value.type].cores
   memory   = var.types[each.value.type].memory
   ssh      = {
-    user       = var.ssh.user
+    user       = "cloud"
     public_key = file(var.ssh.public_key)
   }
   sshfs    = var.sshfs

@@ -13,7 +13,7 @@ config:
   transport: ssh
   ssh:
     native-ssh: true
-    user: lbetz
+    user: cloud
     host-key-check: false
     run-as: root
     run-as-command:

@@ -32,7 +32,7 @@ Requirements for the local machine:
 * SSH access via pubkey without passphrass
 
 Requirements for the used Proxmox templates:
-* cloud-init, no package updates
+* cloud-init, no package updates, user `cloud` with public ssh key
 * qemu-guest-agent installed and running
 * sshfs package installed
 
