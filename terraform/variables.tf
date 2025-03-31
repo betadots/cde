@@ -17,3 +17,8 @@ variable "vms" {
 variable "types" {
   type = map
 }
+
+variable "openvox" {
+  type = string
+  default = "8"
+}

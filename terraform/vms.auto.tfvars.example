@@ -18,5 +18,7 @@ vms = {
       user    = "<user to connect to local terraform host>"
       private = "~/.ssh/id_ed25519.terraform"
     }   
+    openvox = "8"  # default
+    }
   }
 }

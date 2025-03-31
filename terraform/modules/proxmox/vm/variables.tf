@@ -42,3 +42,8 @@ variable "memory" {
   type    = number
   default = 2048
 }
+
+variable "openvox" {
+  type = string
+  default = "8"
+}

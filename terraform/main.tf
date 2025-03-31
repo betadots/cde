@@ -13,4 +13,5 @@ module "pve_vm" {
     public_key = file(var.ssh.public_key)
   }
   sshfs    = var.sshfs
+  openvox  = var.openvox
 }
