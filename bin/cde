@@ -73,7 +73,7 @@ case "${args[0]}" in
             user=$(bolt inventory show --detail --format json |jq -r ".targets[] | select(.name==\"${args[1]}\").config.ssh.user")
             ip=$(bolt inventory show --detail --format json |jq -r ".targets[] | select(.name==\"${args[1]}\").uri")
             if [[ "x${ip}" != "x" && "x${user}" != "x" ]]; then
-                ssh $user@$ip
+                ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $user@$ip 2>/dev/null
             else
                 echo "Could not found target or user in inventory!"
             exit 1
