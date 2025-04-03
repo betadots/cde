@@ -159,8 +159,8 @@ trap "rm -f $tmp_stderr; rm -rf $tmp_dir; exit $1" 1 2 15
 
 # Cleanup
 cleanup() {
-  if [ -n "$tmp_dir" ]; then
-    rm -rf "$tmp_dir"
+  if [ -n "${tmp_dir}" ]; then
+    rm -rf $tmp_dir
   fi
   exit $1
 }
@@ -402,32 +402,14 @@ assert_unmodified_apt_config() {
 
 if [ -n "$PT_yum_source" ]; then
   yum_source=$PT_yum_source
-else
-  if [ "$nightly" = true ]; then
-    yum_source='http://nightlies.voxpupuli.org/yum'
-  else
-    yum_source='http://yum.voxpupuli.org'
-  fi
 fi
 
 if [ -n "$PT_apt_source" ]; then
   apt_source=$PT_apt_source
-else
-  if [ "$nightly" = true ]; then
-    apt_source='http://nightlies.voxpupuli.org/apt'
-  else
-    apt_source='http://apt.voxpupuli.org'
-  fi
 fi
 
 if [ -n "$PT_mac_source" ]; then
   mac_source=$PT_mac_source
-else
-  if [ "$nightly" = true ]; then
-    mac_source='http://nightlies.voxpupuli.org/downloads'
-  else
-    mac_source='http://downloads.voxpupuli.org'
-  fi
 fi
 
 #####
@@ -528,13 +510,6 @@ esac
 
 # Determine the Collection
 if [ -n "$PT_collection" ]; then
-  # Check whether collection is nightly
-  if [[ "$PT_collection" == *"nightly"* ]]; then
-    nightly=true
-  else
-    nightly=false
-  fi
-
   collection=$PT_collection
 else
   collection='openvox8'
