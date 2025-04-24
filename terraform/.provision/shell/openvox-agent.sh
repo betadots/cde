@@ -47,13 +47,6 @@ case $ID in
       apt-get install -y openvox-agent >/dev/null 2>&1 || raise_error
       echo "ok"
     fi
-
-    if ! [ -L /etc/puppetlabs/code/environments/production ]; then
-      echo -n "Removing production environment..."
-      rm -rf /etc/puppetlabs/code/environments/production >/dev/null 2>&1 || raise_error
-      ln -s /root/puppetcode /etc/puppetlabs/code/environments/production >/dev/null 2>&1 || raise_error
-      echo "ok"
-    fi
     ;;
 
   rocky | almalinux | redhat | centos)
@@ -75,6 +68,13 @@ esac
 if $(systemctl status puppet |grep 'puppet.service; enabled;' >/dev/null 2>&1); then
   echo -n "Disable OpenVox agent..."
   systemctl disable --now puppet.service >/dev/null 2>&1 || raise_error
+  echo "ok"
+fi
+
+if ! [ -L /etc/puppetlabs/code/environments/production ]; then
+  echo -n "Removing production environment..."
+  rm -rf /etc/puppetlabs/code/environments/production >/dev/null 2>&1 || raise_error
+  ln -s /root/puppetcode /etc/puppetlabs/code/environments/production >/dev/null 2>&1 || raise_error
   echo "ok"
 fi
 

@@ -64,11 +64,12 @@ resource "proxmox_virtual_environment_vm" "this" {
       "sudo chmod +x /tmp/terraform.sshfs",
       "sudo /tmp/terraform.sshfs -u ${var.sshfs.user} -h ${local.myip} -s ${path.cwd}/.provision -d /terraform",
       "sudo /tmp/terraform.sshfs -u ${var.sshfs.user} -h ${local.myip} -s puppetcode -d /root/puppetcode",
-      "sudo /terraform/shell/openvox-agent.sh -v ${var.openvox}"
+#      "sudo /terraform/shell/openvox-agent.sh -v ${var.openvox}"
     ]
   }
 
-#  provisioner "local-exec" {
-#    command = "bolt apply -e \"file { '/tmp/bolt.txt': ensure => file, content => 'Test' }\" --targets ${each.key}"
-#  } 
+  provisioner "local-exec" {
+    #command = "bolt apply -e \"file { '/tmp/bolt.txt': ensure => file, content => 'Test' }\" --targets ${flatten(self.ipv4_addresses)[1]}"
+    command = "bolt task run cde::install_agent --targets ${flatten(self.ipv4_addresses)[1]} collection=openvox7 version=latest"
+  } 
 }    
