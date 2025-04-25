@@ -52,24 +52,7 @@ resource "proxmox_virtual_environment_vm" "this" {
     destination = "/tmp/identity"
   }
 
-  provisioner "file" {
-    source      = "${path.root}/.provision/sshfs.sh"
-    destination = "/tmp/terraform.sshfs"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo install -o root -g root -m700 -d  /root/.ssh",
-      "sudo install -o root -g root -m600 /tmp/identity /root/.ssh/identity && rm /tmp/identity",
-      "sudo chmod +x /tmp/terraform.sshfs",
-      "sudo /tmp/terraform.sshfs -u ${var.sshfs.user} -h ${local.myip} -s ${path.cwd}/.provision -d /terraform",
-      "sudo /tmp/terraform.sshfs -u ${var.sshfs.user} -h ${local.myip} -s puppetcode -d /root/puppetcode",
-#      "sudo /terraform/shell/openvox-agent.sh -v ${var.openvox}"
-    ]
-  }
-
   provisioner "local-exec" {
-    #command = "bolt apply -e \"file { '/tmp/bolt.txt': ensure => file, content => 'Test' }\" --targets ${flatten(self.ipv4_addresses)[1]}"
-    command = "bolt task run cde::install_agent --targets ${flatten(self.ipv4_addresses)[1]} collection=openvox7 version=latest"
-  } 
+    command = "bolt plan run cde::provision openvox_collection=${var.openvox}  openvox_version='latest' sshfs_user=${var.sshfs.user} sshfs_host=${local.myip} --targets ${flatten(self.ipv4_addresses)[1]}"
+  }
 }    
