@@ -52,6 +52,8 @@ case $provider in
               vm+=("module.pve_vm[\\\"${target}\\\"]")
           done
           params=$(jq -c -n '{ dir: "./terraform", target: $ARGS.positional }' --args "${vm[@]}")
+      else
+          params=$(jq -c -n '{ dir: "./terraform" }')
       fi
       ;;
     hetzner)
