@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 usage() { 
-    echo "$0 <up|destroy|ssh> [host target] [-h] [-v] [-p <proxmox|hetzner>]"
+    echo "$0 <up|status|destroy|ssh> [host target] [-h] [-v] [-p <proxmox|hetzner>]"
 }
 
 version() { 
@@ -47,7 +47,11 @@ done
 case $provider in
     proxmox)
       if [[ "x${args[1]}" != "x" ]]; then
-          vm="target='module.pve_vm[\"${args[1]}\"]'"
+          vm=()
+          for target in ${args[@]:1}; do
+              vm+=("module.pve_vm[\\\"${target}\\\"]")
+          done
+          params=$(jq -c -n '{ dir: "./terraform", target: $ARGS.positional }' --args "${vm[@]}")
       fi
       ;;
     hetzner)
@@ -59,14 +63,15 @@ case $provider in
       exit 1
 esac
 
-
 # subcommands
 case "${args[0]}" in
     up)  
-        bolt plan run terraform::apply dir=./terraform $vm
+        #bolt plan run terraform::apply dir=./terraform $vm
+        bolt plan run terraform::apply --params $params
         ;;
     destroy)
-        bolt plan run terraform::destroy dir=./terraform $vm
+        echo $vm
+        bolt plan run terraform::destroy --params $params
         ;;
     ssh)
         if [[ "x${args[1]}" != "x" ]]; then
