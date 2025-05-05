@@ -68,11 +68,9 @@ esac
 # subcommands
 case "${args[0]}" in
     up)  
-        #bolt plan run terraform::apply dir=./terraform $vm
         bolt plan run terraform::apply --params $params
         ;;
     destroy)
-        echo $vm
         bolt plan run terraform::destroy --params $params
         ;;
     ssh)
