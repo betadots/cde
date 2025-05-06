@@ -16,6 +16,7 @@ Required variables for Terraform (located in ./terraform) are:
   * *sshfs* hash to configure mounts from your local workstation
     * *user* name to login to your waorkstation
     * *private* private key (without passphrase) file to use 
+  * optional *bridge* the vm is connected, defaults to vmbr0
 * **types** for a definition of different VM sizes
   * name (for another hash) with count of *cores* and *memory*
 

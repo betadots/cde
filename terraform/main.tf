@@ -8,6 +8,7 @@ module "pve_vm" {
   template = each.value.template
   cores    = var.types[each.value.type].cores
   memory   = var.types[each.value.type].memory
+  bridge   = try(each.value.bridge, "vmbr0")
   ssh      = {
     user       = "cloud"
     public_key = file(var.ssh.public_key)
