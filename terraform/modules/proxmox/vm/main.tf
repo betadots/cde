@@ -52,6 +52,12 @@ resource "proxmox_virtual_environment_vm" "this" {
     destination = "/tmp/identity"
   }
 
+  provisioner "remote-exec" {
+    inline = [
+      "while [ ! $? -eq 0 ]; do sleep 5; cloud-init status --wait; done",
+    ]
+  }
+
   provisioner "local-exec" {
     command = "bolt plan run cde::provision openvox_collection=${var.openvox}  openvox_version='latest' sshfs_user=${var.sshfs.user} sshfs_host=${local.myip} --targets ${flatten(self.ipv4_addresses)[1]}"
   }
