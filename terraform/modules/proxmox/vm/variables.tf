@@ -13,7 +13,15 @@ variable "ssh" {
 }
 
 variable "sshfs" {
-  type = map
+  type = object({
+    user = string
+    key_file = string
+    mounts = list(object({
+      src = string
+      dst = string
+    }))
+  })
+  default = null
 }
 
 variable "name" {

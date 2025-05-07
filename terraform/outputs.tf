@@ -8,4 +8,3 @@ output "ipv4" {
 output "status" {
   value = local.status
 }
-

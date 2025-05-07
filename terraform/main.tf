@@ -1,5 +1,5 @@
 module "pve_vm" {
-  for_each = var.vms
+  for_each = local.vms
 
   source   = "./modules/proxmox/vm"
 
@@ -13,6 +13,6 @@ module "pve_vm" {
     user       = "cloud"
     public_key = file(var.ssh.public_key)
   }
-  sshfs    = var.sshfs
-  openvox  = var.openvox
+  sshfs    = each.value.sshfs
+  openvox  = each.value.openvox
 }

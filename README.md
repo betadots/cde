@@ -9,14 +9,17 @@ Required variables for Terraform (located in ./terraform) are:
 * **proxmox** here the data for authentication
   * *endpoint* URL to the API endpoint of your Proxmox environment
   * *api_token*
-* **vms** a hash of managed virtual machines cloned from templates
+* optional **vm_default** set defaults for all defined machines in **vms**
   * *type* (size) of the virtual machine
   * *template* name to clone from
   * *node* destination to deploy
   * *sshfs* hash to configure mounts from your local workstation
     * *user* name to login to your waorkstation
     * *private* private key (without passphrase) file to use 
-  * optional *bridge* the vm is connected, defaults to vmbr0
+  * *bridge* the vm is connected, defaults to vmbr0
+  * *openvox* the openvox collection ("7" or "8") to use
+* **vms** a hash of managed virtual machines cloned from templates
+  * same options as in **vm_default**
 * **types** for a definition of different VM sizes
   * name (for another hash) with count of *cores* and *memory*
 

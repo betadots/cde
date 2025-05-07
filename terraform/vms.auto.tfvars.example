@@ -1,11 +1,22 @@
 types = {
-  "puppet" = {
+  "large" = {
     "cores" = 2,
     "memory" = 4096,
   },
-  "workstation" = {
+  "small" = {
     "cores" = 1,
     "memory" = "1024"
+  }
+}
+
+vm_default = {
+  type     = "small"
+  bridge   = "vmbr0"
+  sshfs = {
+    mounts   = [{
+      src = "puppetcode"
+      dst = "/root/puppetcode"
+    }]
   }
 }
 

@@ -6,19 +6,43 @@ variable "ssh" {
   type = map
 }
 
-variable "sshfs" {
-  type = map
+variable "vm_default" {
+  type = object({
+    template = optional(string)
+    type     = optional(string)
+    node     = optional(string)
+    bridge   = optional(string)
+    sshfs    = optional(object({
+      user = optional(string)
+      key_file = optional(string)
+      mounts = optional(list(object({
+        src = string
+        dst = string
+      })))
+    }))
+    openvox  = optional(string)
+  })
+  default = null
 }
 
 variable "vms" {
-  type = map
+  type = map(object({
+    template = optional(string)
+    type     = optional(string)
+    node     = optional(string)
+    bridge   = optional(string)
+    sshfs    = optional(object({
+      user = optional(string)
+      key_file = optional(string)
+      mounts = optional(list(object({
+        src = string
+        dst = string
+      })))
+    }))
+    openvox  = optional(string)
+  }))
 }
 
 variable "types" {
   type = map
-}
-
-variable "openvox" {
-  type = string
-  default = "8"
 }
