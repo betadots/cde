@@ -423,6 +423,9 @@ if [ -f "$PT__installdir/facts/tasks/bash.sh" ]; then
   os=$(bash $PT__installdir/facts/tasks/bash.sh "platform")
   os_version=$(bash $PT__installdir/facts/tasks/bash.sh "release")
 
+  # Major OS Release
+  platform_version=$(echo $os_version | cut -d. -f1)
+
   case $os in
     "RedHat"|"Almalinux"|"Rocky"|"OracleLinux"|"CentOS")
       info "${os} platform! Lets get you a RPM..."
@@ -449,6 +452,9 @@ if [ -f "$PT__installdir/facts/tasks/bash.sh" ]; then
       info "${os} platform! Lets get you a DEB..."
       pkg_type=deb
       platform=$(echo $os | tr '[:upper:]' '[:lower:]')
+      if [ $os == "Ubuntu" ]; then
+        platform_version=$os_version
+      fi
       ;;
     "Linuxmint"|"LinuxMint")
       info "Mint platform! Lets get you a DEB..."
@@ -457,9 +463,9 @@ if [ -f "$PT__installdir/facts/tasks/bash.sh" ]; then
         "4")  platform="debian"; platform_version="10";;
         "5")  platform="debian"; platform_version="11";;
         "6")  platform="debian"; platform_version="12";;
-        "21") platform="ubuntu"; platform_version="22.04";;
-        "20") platform="ubuntu"; platform_version="20.04";;
         "19") platform="ubuntu"; platform_version="18.04";;
+        "20") platform="ubuntu"; platform_version="20.04";;
+        "21") platform="ubuntu"; platform_version="22.04";;
       esac
       ;;
     *)
@@ -467,9 +473,6 @@ if [ -f "$PT__installdir/facts/tasks/bash.sh" ]; then
       cleanup 1
       ;;
   esac
-
-  # Major OS Release
-  platform_version=$(echo $os_version | cut -d. -f1)
 else
   echo "This module depends on the puppetlabs-facts module"
   cleanup 1
