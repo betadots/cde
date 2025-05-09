@@ -89,7 +89,11 @@ case "${args[0]}" in
         fi
         ;;
     status)
-        terraform -chdir=./terraform refresh >/dev/null 2>&1
+        terraform -chdir=./terraform refresh >/dev/null >&1
+        if (( $? != 0)); then
+          exit 1
+        fi
+
         if [[ "x${args[1]}" != "x" ]]; then
             for target in ${args[@]:1}; do
                terraform -chdir=./terraform output -json status |jq -r "{$target} | to_entries[] | \"\(.key)@\(.value)\"" | column -t -s'@'
