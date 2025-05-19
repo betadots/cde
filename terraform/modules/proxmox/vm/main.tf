@@ -55,7 +55,7 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   provisioner "local-exec" {
-    command = "bolt task run cde::install_agent collection=openvox${var.openvox} version='latest' --targets ${flatten(self.ipv4_addresses)[1]}"
+    command = "bolt task run cde::install_agent collection=openvox${var.openvox} version='latest' stop_service=true --targets ${flatten(self.ipv4_addresses)[2]}"
   }
 }    
 
