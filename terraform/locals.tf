@@ -18,6 +18,7 @@ locals {
         mounts = try(v.sshfs.mounts, null) != null ? v.sshfs.mounts : try(var.vm_default.sshfs.mounts, null)
       }
       openvox   = try(v.openvox, null) != null ? v.openvox : try(var.vm_default.openvox, null)
+      openvox_prod_env   = try(v.openvox_prod_env, null) != null ? v.openvox_prod_env : try(var.vm_default.openvox_prod_env, "")
     }
   }
 }

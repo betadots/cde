@@ -55,3 +55,8 @@ variable "openvox" {
   type = string
   default = "8"
 }
+
+variable "openvox_prod_env" {
+  type    = string
+  default = ""
+}

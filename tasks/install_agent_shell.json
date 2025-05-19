@@ -34,6 +34,11 @@
       "description": "Whether to stop the voxpupuli agent service after install",
       "type": "Optional[Boolean]"
     },
+    "production_env": {
+      "description": "Link production environment to this directory",
+      "type": "String",
+      "default": ""
+    },
     "retry": {
       "description": "The number of retries in case of network connectivity failures",
       "type": "Integer[0]",

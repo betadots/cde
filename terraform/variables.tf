@@ -20,7 +20,8 @@ variable "vm_default" {
         dst = string
       })))
     }))
-    openvox  = optional(string)
+    openvox          = optional(string)
+    openvox_prod_env = optional(string)
   })
   default = null
 }
@@ -39,7 +40,8 @@ variable "vms" {
         dst = string
       })))
     }))
-    openvox  = optional(string)
+    openvox          = optional(string)
+    openvox_prod_env = optional(string)
   }))
 }
 

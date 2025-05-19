@@ -30,6 +30,6 @@ vms = {
       private = "~/.ssh/id_ed25519.terraform"
     }   
     openvox = "8"  # default
-    }
+    openvox_prod_env = "/root/puppetcode" # set link for production environment directory
   }
 }

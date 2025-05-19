@@ -697,6 +697,10 @@ if [[ $PT__noop != true ]]; then
   if [[ $PT_stop_service = true ]]; then
     /opt/puppetlabs/bin/puppet resource service puppet ensure=stopped enable=false
   fi
+
+  if ! [[ -z "$PT_production_env" ]]; then
+    /opt/puppetlabs/bin/puppet resource file '/etc/puppetlabs/code/environments/production' ensure=link target=$PT_production_env force=true
+  fi
 fi
 
 cleanup 0
