@@ -34,16 +34,10 @@ plan cde::mount (
       out::message("Mounting ${_mp['dst']} from ${_mp['host']}:${_mp['src']}")
  
       apply($targets, _catch_errors => false, _run_as => root) {
-        file { $_mp['dst']:
-          ensure => directory,
+        Exec {
+          path => ['/usr/bin'],
         }
- 
-        file { '/etc/puppetlabs/code/environments/production':
-          ensure => link,
-          target => $_mp['dst'],
-          force  => true,
-        }
- 
+
         package { 'sshfs':
           ensure => installed,
         }
@@ -55,11 +49,15 @@ plan cde::mount (
           mode   => '0700',
         }
 
-        -> exec { 'install identity':
-          path    => ['/usr/bin'],
+        -> exec { 'install private key for identity':
           command => 'install -o root -g root -m600 /tmp/identity /root/.ssh/ && rm /tmp/identity',
           onlyif  => 'stat /tmp/identity',
         } 
+
+        -> exec { "create directory for mount point ${_mp['dst']}":
+          command => "mkdir -p ${_mp['dst']}",
+          unless  => "stat ${_mp['dst']}",
+        }
 
         -> mount { $_mp['dst']:
           ensure  => 'mounted',
@@ -67,7 +65,6 @@ plan cde::mount (
           fstype  => 'fuse.sshfs',
           options => 'IdentityFile=/root/.ssh/identity,StrictHostKeyChecking=no,_netdev,allow_other',
           remounts => false,
-          require  => File[$_mp['dst']],
         }
       }
     }
