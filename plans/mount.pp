@@ -47,7 +47,20 @@ plan cde::mount (
         package { 'sshfs':
           ensure => installed,
         }
- 
+
+        -> file { '/root/.ssh':
+          ensure => directory,
+          owner  => 'root',
+          group  => 'root',
+          mode   => '0700',
+        }
+
+        -> exec { 'install identity':
+          path    => ['/usr/bin'],
+          command => 'install -o root -g root -m600 /tmp/identity /root/.ssh/ && rm /tmp/identity',
+          onlyif  => 'stat /tmp/identity',
+        } 
+
         -> mount { $_mp['dst']:
           ensure  => 'mounted',
           device  => "${_mp['user']}@${_mp['host']}:${_mp['src']}",
