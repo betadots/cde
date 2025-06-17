@@ -1,4 +1,6 @@
 ---
 name: cde
 modules:
-- name: puppetlabs-terraform
+- puppetlabs/terraform
+- puppetlabs/docker
+- puppetlabs/vcsrepo

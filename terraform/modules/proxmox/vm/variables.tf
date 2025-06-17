@@ -41,6 +41,10 @@ variable "bridge" {
   default = "vmbr0"
 }
 
+variable "domain" {
+  type    = string
+}
+
 variable "cores" {
   type    = number
   default = 2
@@ -49,6 +53,14 @@ variable "cores" {
 variable "memory" {
   type    = number
   default = 2048
+}
+
+variable "provision" {
+  type = map(object({
+    type = string
+    name = string
+    args = optional(map(string))
+  }))
 }
 
 variable "openvox" {

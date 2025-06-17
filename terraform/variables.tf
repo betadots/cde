@@ -11,7 +11,7 @@ variable "vm_default" {
     template = optional(string)
     type     = optional(string)
     node     = optional(string)
-    bridge   = optional(string)
+    network  = optional(string)
     sshfs    = optional(object({
       user = optional(string)
       key_file = optional(string)
@@ -31,7 +31,7 @@ variable "vms" {
     template = optional(string)
     type     = optional(string)
     node     = optional(string)
-    bridge   = optional(string)
+    network  = optional(string)
     sshfs    = optional(object({
       user = optional(string)
       key_file = optional(string)
@@ -40,9 +40,18 @@ variable "vms" {
         dst = string
       })))
     }))
+    provision        = optional(list(object({
+      name = string
+      type = string
+      args = optional(map(string))
+    })))
     openvox          = optional(string)
     openvox_prod_env = optional(string)
   }))
+}
+
+variable "networks" {
+  type = map
 }
 
 variable "types" {

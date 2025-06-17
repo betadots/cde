@@ -77,4 +77,8 @@ resource "null_resource" "this" {
   provisioner "local-exec" {
     command = var.sshfs.mounts == null ? "exit 0" : "bolt plan run cde::mount targets=${flatten(proxmox_virtual_environment_vm.this.ipv4_addresses)[1]} sshfs_user=${var.sshfs.user} sshfs_host=${local.myip} mounts='${jsonencode(var.sshfs.mounts)}'"
   }
+
+  provisioner "local-exec" {
+    command = var.provision == null ? "exit 0": "bolt plan run cde::dispatch targets=${flatten(proxmox_virtual_environment_vm.this.ipv4_addresses)[1]} scripts='${jsonencode(values(var.provision))}'"
+  }
 }
