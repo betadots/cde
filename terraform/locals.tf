@@ -21,7 +21,7 @@ locals {
         "cde::dhcp_client" = {
           type = "plan"
           name = "cde::dhcp_client"
-          args = { my_domain = try(v.network, null) != null ? var.networks[v.network] : try(var.vm_default.network, "")}
+          args = { my_domain = try(v.network, null) != null ? var.networks[v.network].domain : try(var.networks[var.vm_default.network].domain, "") }
         }
       }, v.provision == null ? {} : {
         for i in v.provision:
