@@ -9,15 +9,28 @@ types = {
   }
 }
 
+networks = {
+  development = {
+    domain = "dev.openvox.local"
+    bridge = "vxlan64"
+  }
+  intern = {
+    domain = "openvox.local"
+    bridge = "vmbr0"
+  }
+}
+
 vm_default = {
   type     = "small"
-  bridge   = "vmbr0"
+  network  = "development"
   sshfs = {
     mounts   = [{
       src = "puppetcode"
       dst = "/root/puppetcode"
     }]
   }
+  openvox = "8" also the default
+  openvox_prod_env = "/root/puppetcode" # set link for production environment directory
 }
 
 vms = {
@@ -26,10 +39,14 @@ vms = {
     type     = "workstation"
     node     = "pve02"
     sshfs    = {
-      user    = "<user to connect to local terraform host>"
-      private = "~/.ssh/id_ed25519.terraform"
-    }   
-    openvox = "8"  # default
-    openvox_prod_env = "/root/puppetcode" # set link for production environment directory
+      mounts   = [{
+        src = "puppetcode"
+        dst = "/var/opt/puppetlabs/code/environments/production"
+      }]
+    }
+    provision = [
+      {name="cde::crafty", type="plan", args={code_dir="/var/opt/puppetlabs/code"}}
+    ]
+    openvox_prod_env = "/var/opt/puppetlabs/code/environments/production"
   }
 }

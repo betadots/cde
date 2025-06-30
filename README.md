@@ -9,16 +9,20 @@ Required variables for Terraform (located in ./terraform) are:
 * **proxmox** here the data for authentication
   * *endpoint* URL to the API endpoint of your Proxmox environment
   * *api_token*
-* optional **vm_default** set defaults for all defined machines in **vms**
+* required **networks** define available networks
+  * *domain* the network domain
+  * *bridge* the proxmox bridge to connect
+* **vms** a hash of managed virtual machines cloned from templates
   * *type* (size) of the virtual machine
   * *template* name to clone from
   * *node* destination to deploy
-  * *sshfs* hash to configure mounts from your local workstation
+  * optional *sshfs* hash to configure mounts from your local workstation
     * *user* name to login to your waorkstation
     * *private* private key (without passphrase) file to use 
-  * *bridge* the vm is connected, defaults to vmbr0
-  * *openvox* the openvox collection ("7" or "8") to use
-* **vms** a hash of managed virtual machines cloned from templates
+  * *network* the vm is connected
+  * optional *openvox* the openvox collection ("7" or "8") to use
+  * optional *openvox_prod_env* link production environment to this directory
+* optional **vm_default** set defaults for all defined machines in **vms**
   * same options as in **vm_default**
 * **types** for a definition of different VM sizes
   * name (for another hash) with count of *cores* and *memory*
@@ -45,7 +49,7 @@ How to start?
 * change into root project directory
 * `./bin/cde init` 
   * initilize project (installs bolt modules and do a terraform init)
-* `./bin/cde <up|destroy> [virtual machine]`
-  * apply or destroy all or a specific defined machine(s)
+* `./bin/cde <status|up|destroy> [virtual machine]`
+  * show status, apply or destroy all or a specific defined machine(s)
 * `./bin/cde ssh <virtual machine>`
   * logon specific machine  
