@@ -41,6 +41,18 @@ plan cde::dhcp_client (
       'redhat': {
         file { '/etc/NetworkManager/conf.d/99-cloud-init.conf':
           ensure => absent,
+          notify => Service['NetworkManager'],
+        }
+        file { '/etc/NetworkManager/system-connections/cloud-init-eth0.nmconnection':
+          ensure => file,
+          mode   => '0600',
+        }
+        -> file_line { 'remove dns entries':
+          ensure            => 'absent',
+          path              => '/etc/NetworkManager/system-connections/cloud-init-eth0.nmconnection',
+          match             => '^dns',
+          match_for_absence => true,
+          multiple          => true,
         }
         ~> service { 'NetworkManager':
           ensure => running,
