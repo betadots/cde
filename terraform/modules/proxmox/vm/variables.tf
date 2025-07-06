@@ -59,7 +59,7 @@ variable "provision" {
   type = map(object({
     type = string
     name = string
-    args = optional(map(string))
+    args = optional(map(any))
   }))
 }
 

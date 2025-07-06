@@ -11,7 +11,7 @@ plan cde::crafty (
   Stdlib::Absolutepath $code_dir = '/etc/puppetlabs/code',
 ) {
   out::message("Installing OpenVox Server...")
-  run_plan('facts', 'targets' => $targets)
+#  run_plan('facts', 'targets' => $targets)
  
   apply($targets, _catch_errors => false, _run_as => root) {
     File {
@@ -30,6 +30,7 @@ plan cde::crafty (
       ensure   => present,
       provider => git,
       source   => 'https://github.com/voxpupuli/crafty.git',
+      revision => '4bd0ee29d43bfa206069e8aa2ccb9cb7484a854c',
     }
     
     file { '/opt/crafty/openvox/oss/.env':
@@ -38,7 +39,7 @@ plan cde::crafty (
     
     file { '/opt/crafty/openvox/oss/compose.override.yaml':
       content => inline_template('services:
-  puppet:
+  openvoxserver:
     environment:
       - OPENVOXSERVER_ENVIRONMENT_TIMEOUT=0
     volumes:
