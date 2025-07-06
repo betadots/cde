@@ -96,7 +96,7 @@ case "${args[0]}" in
 
         if [[ "x${args[1]}" != "x" ]]; then
             for target in ${args[@]:1}; do
-               terraform -chdir=./terraform output -json status |jq -r "{$target} | to_entries[] | \"\(.key)@\(.value)\"" | column -t -s'@'
+               terraform -chdir=./terraform output -json status |jq -r "{\"$target\"} | to_entries[] | \"\(.key)@\(.value)\"" | column -t -s'@'
             done
         else
             terraform -chdir=./terraform output -json status |jq -r '. | to_entries[] | "\(.key)@\(.value)"' | column -t -s'@'
