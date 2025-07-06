@@ -28,11 +28,12 @@ variable "vm_default" {
 
 variable "vms" {
   type = map(object({
-    template = optional(string)
-    type     = optional(string)
-    node     = optional(string)
-    network  = optional(string)
-    sshfs    = optional(object({
+    template  = optional(string)
+    hostnamwe = optional(string)
+    type      = optional(string)
+    node      = optional(string)
+    network   = optional(string)
+    sshfs     = optional(object({
       user = optional(string)
       key_file = optional(string)
       mounts = optional(list(object({
@@ -40,7 +41,7 @@ variable "vms" {
         dst = string
       })))
     }))
-    provision        = optional(list(object({
+    provision = optional(list(object({
       name = string
       type = string
       args = optional(map(string))

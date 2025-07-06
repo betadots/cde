@@ -1,5 +1,5 @@
 resource "proxmox_virtual_environment_vm" "this" {
-  name        = var.name
+  name        = var.hostname
   description = "Managed by Terraform"
   node_name   = var.node
 

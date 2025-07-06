@@ -24,6 +24,10 @@ variable "sshfs" {
   default = null
 }
 
+variable "hostname" {
+  type = string
+}
+
 variable "name" {
   type = string
 }

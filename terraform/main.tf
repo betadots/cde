@@ -4,6 +4,7 @@ module "pve_vm" {
   source = "./modules/proxmox/vm"
 
   name      = each.key
+  hostname  = try(each.value.hostname, each.key)
   node      = each.value.node
   template  = each.value.template
   cores     = var.types[each.value.type].cores
