@@ -17,7 +17,7 @@ plan cde::crafty (
     File {
       ensure  => file,
       require => Vcsrepo['/opt/crafty'],
-      notify  => Docker_compose['openvox'],
+      notify  => Docker_compose['oss'],
     }
 
     include docker::compose
@@ -57,7 +57,7 @@ plan cde::crafty (
       - <%= @code_dir %>:/etc/puppetlabs/code'),
     }
     
-    docker_compose { 'openvox':
+    docker_compose { 'oss':
       ensure        => present,
       compose_files => ['/opt/crafty/openvox/oss/compose.yaml', '/opt/crafty/openvox/oss/compose.override.yaml'],
     }

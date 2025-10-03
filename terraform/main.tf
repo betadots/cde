@@ -18,5 +18,5 @@ module "pve_vm" {
   sshfs     = each.value.sshfs
   provision = each.value.provision
   openvox   = each.value.openvox
-  openvox_prod_env  = each.value.openvox_prod_env
+  #openvox   = {}
 }

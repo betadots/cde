@@ -20,8 +20,15 @@ variable "vm_default" {
         dst = string
       })))
     }))
-    openvox          = optional(string)
-    openvox_prod_env = optional(string)
+    openvox = optional(object({
+      collection       = optional(string)
+      version          = optional(string)
+      csr_attributes   = optional(object({
+        extension_requests = optional(map(string), {})
+        custom_attributes  = optional(map(string), {})
+      }))
+      prod_environment = optional(string)
+    }), {})
   })
   default = null
 }
@@ -41,13 +48,19 @@ variable "vms" {
         dst = string
       })))
     }))
+    openvox = optional(object({
+      collection     = optional(string)
+      version        = optional(string)
+      csr_attributes = optional(object({
+        extension_requests = optional(map(string), {})
+        custom_attributes  = optional(map(string), {})
+      }))
+    }), {})
     provision = optional(list(object({
       name = string
       type = string
       args = optional(map(string))
     })))
-    openvox          = optional(string)
-    openvox_prod_env = optional(string)
   }))
 }
 

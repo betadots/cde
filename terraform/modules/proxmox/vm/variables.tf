@@ -68,11 +68,14 @@ variable "provision" {
 }
 
 variable "openvox" {
-  type = string
-  default = "8"
-}
-
-variable "openvox_prod_env" {
-  type    = string
-  default = ""
+  type = object({
+    collection       = optional(string)
+    version          = optional(string)
+    csr_attributes   = optional(object({
+      extension_requests = optional(map(string), {})
+      custom_attributes  = optional(map(string), {})
+    }))
+    prod_environment = optional(string)
+  })
+  default = {}
 }

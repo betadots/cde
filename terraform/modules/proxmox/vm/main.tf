@@ -34,6 +34,10 @@ resource "proxmox_virtual_environment_vm" "this" {
         address = "dhcp"
       }
     }
+
+    dns {
+      domain = var.domain
+    }
     
     user_account {
       username = var.ssh.user
@@ -54,20 +58,6 @@ resource "proxmox_virtual_environment_vm" "this" {
     ]
   }
 
-  provisioner "local-exec" {
-    command = "bolt task run cde::install_agent collection=openvox${var.openvox} version='latest' stop_service=true production_env=${var.openvox_prod_env} --targets ${flatten(self.ipv4_addresses)[1]}"
-  }
-}    
-
-resource "null_resource" "this" {
-  count = var.sshfs != null ? 1 : tonumber("0")
-
-  connection {
-    type     = "ssh"
-    user     = var.ssh.user
-    host     = flatten(proxmox_virtual_environment_vm.this.ipv4_addresses)[1]
-  }
-
   provisioner "file" {
     # require connection
     source      = var.sshfs.key_file
@@ -75,10 +65,14 @@ resource "null_resource" "this" {
   }
 
   provisioner "local-exec" {
-    command = var.sshfs.mounts == null ? "exit 0" : "bolt plan run cde::mount targets=${flatten(proxmox_virtual_environment_vm.this.ipv4_addresses)[1]} sshfs_user=${var.sshfs.user} sshfs_host=${local.myip} mounts='${jsonencode(var.sshfs.mounts)}'"
+    command = var.openvox == {} ? "exit 0": "bolt plan run cde::openvox %{ if var.openvox.collection != null }collection=${var.openvox.collection}%{ endif } %{ if var.openvox.version != null }version=${var.openvox.version}%{ endif } %{ if var.openvox.prod_environment != null }prod_environment=${var.openvox.prod_environment}%{ endif } %{ if var.openvox.csr_attributes != null }csr_attributes='${jsonencode(var.openvox.csr_attributes)}'%{ endif } targets=${flatten(self.ipv4_addresses)[1]}"
   }
 
   provisioner "local-exec" {
-    command = var.provision == null ? "exit 0": "bolt plan run cde::dispatch targets=${flatten(proxmox_virtual_environment_vm.this.ipv4_addresses)[1]} scripts='${jsonencode(values(var.provision))}'"
+    command = var.sshfs.mounts == null ? "exit 0" : "bolt plan run cde::mount targets=${flatten(proxmox_virtual_environment_vm.this.ipv4_addresses)[1]} sshfs_user=${var.sshfs.user} sshfs_host=${local.myip} mounts='${jsonencode(var.sshfs.mounts)}'"
   }
-}
+
+  #provisioner "local-exec" {
+  #  command = var.provision == null ? "exit 0": "bolt plan run cde::dispatch targets=${flatten(self.ipv4_addresses)[1]} scripts='${jsonencode(values(var.provision))}'"
+  #}
+}    

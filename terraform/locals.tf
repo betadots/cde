@@ -17,18 +17,12 @@ locals {
         key_file = try(v.sshfs.key_file, null) != null ? v.sshfs.key_file : try(var.vm_default.sshfs.key_file, null)
         mounts = try(v.sshfs.mounts, null) != null ? v.sshfs.mounts : try(var.vm_default.sshfs.mounts, null)
       }
-      provision =  merge(v.provision == null ? {} : {
+      provision =  v.provision == null ? {} : {
         for i in v.provision:
           i.name => i
-        }, {
-        "cde::dhcp_client" = {
-          type = "plan"
-          name = "cde::dhcp_client"
-          args = { my_domain = try(v.network, null) != null ? var.networks[v.network].domain : try(var.networks[var.vm_default.network].domain, "") }
-        }
-      })
-      openvox   = try(v.openvox, null) != null ? v.openvox : try(var.vm_default.openvox, null)
-      openvox_prod_env   = try(v.openvox_prod_env, null) != null ? v.openvox_prod_env : try(var.vm_default.openvox_prod_env, "")
+      }
+      openvox   = provider::deepmerge::mergo(var.vm_default.openvox, v.openvox, "no_null_override")
+      #openvox   = var.vm_default.openvox
     }
   }
 }
