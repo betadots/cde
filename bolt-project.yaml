@@ -4,7 +4,7 @@ modules:
   - puppetlabs/terraform
   - puppetlabs/docker
   - puppetlabs/vcsrepo
-  - puoppet/openvox_bootstrap
+  - puppet/openvox_bootstrap
 plugin-hooks:
   puppet_library:
     plugin: task

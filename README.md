@@ -18,10 +18,18 @@ Required variables for Terraform (located in ./terraform) are:
   * *node* destination to deploy
   * optional *sshfs* hash to configure mounts from your local workstation
     * *user* name to login to your waorkstation
-    * *private* private key (without passphrase) file to use 
+    * *key_file* private key (without passphrase) file to use 
+    * optional **mounts** list of
+      * **src** local directory
+      * **dst** where to mount into the VM
   * *network* the vm is connected
-  * optional *openvox* the openvox collection ("7" or "8") to use
-  * optional *openvox_prod_env* link production environment to this directory
+  * optional *openvox*
+    * optional **collection** ("7" or "8") to use, default to `8`
+    * optional **version** exact version, default to `latest`
+    * optional **csr_attributes**
+      * optional **extension_requests**
+      * optional **custom_attributes**
+    * optional *openvox_prod_env* link production environment to this directory
 * optional **vm_default** set defaults for all defined machines in **vms**
   * same options as in **vm_default**
 * **types** for a definition of different VM sizes

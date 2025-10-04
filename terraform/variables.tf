@@ -28,7 +28,7 @@ variable "vm_default" {
         custom_attributes  = optional(map(string), {})
       }))
       prod_environment = optional(string)
-    }), {})
+    }), null)
   })
   default = null
 }
@@ -55,7 +55,8 @@ variable "vms" {
         extension_requests = optional(map(string), {})
         custom_attributes  = optional(map(string), {})
       }))
-    }), {})
+      prod_environment = optional(string)
+    }), null)
     provision = optional(list(object({
       name = string
       type = string
