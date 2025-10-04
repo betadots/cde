@@ -65,7 +65,7 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   provisioner "local-exec" {
-    command = var.openvox == {} ? "exit 0": "bolt plan run cde::openvox %{ if var.openvox.collection != null }collection=${var.openvox.collection}%{ endif } %{ if var.openvox.version != null }version=${var.openvox.version}%{ endif } %{ if var.openvox.prod_environment != null }prod_environment=${var.openvox.prod_environment}%{ endif } %{ if var.openvox.csr_attributes != null }csr_attributes='${jsonencode(var.openvox.csr_attributes)}'%{ endif } targets=${flatten(self.ipv4_addresses)[1]}"
+    command = var.openvox == null ? "exit 0": "bolt plan run cde::openvox %{ if var.openvox.collection != null }collection=${var.openvox.collection}%{ endif } %{ if var.openvox.version != null }version=${var.openvox.version}%{ endif } %{ if var.openvox.prod_environment != null }prod_environment=${var.openvox.prod_environment}%{ endif } %{ if var.openvox.csr_attributes != null }csr_attributes='${jsonencode(var.openvox.csr_attributes)}'%{ endif } targets=${flatten(self.ipv4_addresses)[1]}"
   }
 
   provisioner "local-exec" {

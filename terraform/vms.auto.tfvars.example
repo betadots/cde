@@ -29,8 +29,10 @@ vm_default = {
       dst = "/root/puppetcode"
     }]
   }
-  openvox = "8" also the default
-  openvox_prod_env = "/root/puppetcode" # set link for production environment directory
+  openvox = {
+    collection = "8" also the default
+    prod_environment = "/root/puppetcode" # set link for production environment directory
+  }
 }
 
 vms = {
@@ -43,6 +45,9 @@ vms = {
         src = "puppetcode"
         dst = "/var/opt/puppetlabs/code/environments/production"
       }]
+    }
+    openvox = {
+      collection = "7"
     }
     provision = [
       {name="cde::crafty", type="plan", args={code_dir="/var/opt/puppetlabs/code"}}

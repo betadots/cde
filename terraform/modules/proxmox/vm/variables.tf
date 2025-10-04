@@ -77,4 +77,5 @@ variable "openvox" {
     }))
     prod_environment = optional(string)
   })
+  default = null
 }
